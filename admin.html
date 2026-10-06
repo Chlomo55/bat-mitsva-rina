@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#9e4b6c">
+  <meta name="robots" content="noindex">
+  <title>Administration - Bat Mitsva de Rina</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js" defer></script>
+
+  <style>
+    :root {
+      --primary: #9e4b6c;
+      --primary-dark: #823a57;
+      --accent: #f4c2c2;
+      --accent-light: #fbebee;
+      --bg: #f8f1f4;
+      --card: #ffffff;
+      --text: #4a3e3d;
+      --muted: #8a7a7c;
+      --border: #efe2e6;
+      --green: #2e7d32;
+      --green-bg: #e8f5e9;
+      --red: #c62828;
+      --red-bg: #ffebee;
+      --shadow: 0 10px 30px rgba(158, 75, 108, 0.10);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font-family: inherit; cursor: pointer; }
+    input, select { font-family: inherit; }
+
+    /* ---------- Connexion ---------- */
+    .login-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: linear-gradient(135deg, #fdf6f6 0%, #fae8eb 100%);
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 380px;
+      background: var(--card);
+      padding: 36px 28px;
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      border: 1px solid rgba(244, 194, 194, 0.5);
+    }
+
+    .login-box .script {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.8rem;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    .login-box p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 10px 0 22px;
+    }
+
+    .login-error {
+      color: var(--red);
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-top: 12px;
+      min-height: 1.2em;
+    }
+
+    /* ---------- Champs & boutons ---------- */
+    .field {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #e2d2d5;
+      border-radius: 12px;
+      font-size: 1rem;
+      color: var(--text);
+      background: #faf7f8;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .field:focus {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(158, 75, 108, 0.1);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.6; cursor: default; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(158, 75, 108, 0.25);
+    }
+
+    .btn-light {
+      background: #fff;
+      color: var(--primary-dark);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-light:hover { background: var(--accent-light); }
+
+    .btn-block { width: 100%; padding: 15px; font-size: 1rem; margin-top: 14px; }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .icon-btn:hover { background: var(--accent-light); }
+    .icon-btn.danger:hover { background: var(--red-bg); }
+
+    /* ---------- En-tête ---------- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #fff;
+      padding: 14px 20px;
+      padding-top: calc(14px + env(safe-area-inset-top));
+      box-shadow: 0 4px 18px rgba(130, 58, 87, 0.25);
+    }
+
+    .topbar-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .brand .script {
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.9rem;
+    }
+
+    .brand small {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      opacity: 0.85;
+    }
+
+    .topbar .btn-ghost {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 9px 14px;
+      font-size: 0.82rem;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 22px 20px 110px;
+    }
+
+    /* ---------- Statistiques ---------- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--primary);
+    }
+
+    .stat.green::before { background: var(--green); }
+    .stat.red::before { background: var(--red); }
+    .stat.gold::before { background: #d4a24c; }
+
+    .stat .label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .stat .value {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-top: 6px;
+      color: var(--text);
+    }
+
+    .stat .value small {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    /* ---------- Barre d'outils ---------- */
+    .panel {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search {
+      position: relative;
+      flex: 1 1 260px;
+    }
+
+    .search .field {
+      padding-left: 42px;
+      font-size: 0.95rem;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    .search::before {
+      content: "🔍";
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.95rem;
+      opacity: 0.6;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .chips::-webkit-scrollbar { display: none; }
+
+    .chip {
+      padding: 9px 14px;
+      border-radius: 50px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: #fdf9fa;
+    }
+
+    /* ---------- Tableau (ordinateur) ---------- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      padding: 12px 16px;
+      background: #fdf9fa;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      user-select: none;
+    }
+
+    th.sortable { cursor: pointer; }
+    th.sortable:hover { color: var(--primary); }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #fdf6f8; }
+
+    td.name { font-weight: 600; }
+    td.email { color: var(--muted); word-break: break-all; }
+    td.date { color: var(--muted); font-size: 0.82rem; white-space: nowrap; }
+    td.row-actions { text-align: right; white-space: nowrap; }
+    td.row-actions .icon-btn { margin-left: 6px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge.present { color: var(--green); background: var(--green-bg); }
+    .badge.absent { color: var(--red); background: var(--red-bg); }
+
+    .guests-pill {
+      display: inline-block;
+      min-width: 34px;
+      text-align: center;
+      padding: 4px 10px;
+      border-radius: 10px;
+      background: var(--accent-light);
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
+    /* ---------- Cartes (mobile) ---------- */
+    .cards { display: none; }
+
+    .rsvp-card {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rsvp-card:last-child { border-bottom: none; }
+
+    .rsvp-card .row1 {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .rsvp-card .name {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .rsvp-card .email {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 3px;
+      word-break: break-all;
+    }
+
+    .rsvp-card .row2 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .rsvp-card .meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .rsvp-card .card-actions { display: flex; gap: 8px; }
+
+    .empty {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--muted);
+    }
+
+    .empty .emoji { font-size: 2.4rem; margin-bottom: 10px; }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+    }
+
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid var(--accent-light);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .footer-link {
+      display: block;
+      text-align: center;
+      margin-top: 22px;
+      color: var(--primary);
+      font-size: 0.88rem;
+      text-decoration: underline;
+    }
+
+    /* ---------- Bouton flottant (mobile) ---------- */
+    .fab {
+      display: none;
+      position: fixed;
+      right: 18px;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #fff;
+      font-size: 1.8rem;
+      box-shadow: 0 8px 22px rgba(130, 58, 87, 0.4);
+      z-index: 60;
+    }
+
+    /* ---------- Fenêtre modale ---------- */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(60, 30, 42, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+
+    .modal-backdrop.open { opacity: 1; visibility: visible; }
+
+    .modal {
+      width: 100%;
+      max-width: 440px;
+      background: #fff;
+      border-radius: 22px;
+      padding: 26px 22px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-backdrop.open .modal { transform: translateY(0); }
+
+    .modal h2 {
+      font-size: 1.15rem;
+      color: var(--primary-dark);
+      margin-bottom: 18px;
+    }
+
+    .modal .form-group { margin-bottom: 14px; }
+
+    .modal label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .segmented input { display: none; }
+
+    .segmented label {
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 0.9rem;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1.5px solid #e2d2d5;
+      text-align: center;
+      cursor: pointer;
+      color: var(--text);
+      margin: 0;
+      background: #faf7f8;
+    }
+
+    .segmented input[value="present"]:checked + label {
+      border-color: var(--green);
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .segmented input[value="absent"]:checked + label {
+      border-color: var(--red);
+      background: var(--red-bg);
+      color: var(--red);
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stepper .field { text-align: center; font-weight: 700; }
+    .stepper .icon-btn { width: 48px; height: 48px; flex-shrink: 0; font-size: 1.3rem; }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-actions .btn { flex: 1; padding: 14px; }
+
+    .modal-error {
+      color: var(--red);
+      font-size: 0.85rem;
+      margin-top: 10px;
+      min-height: 1em;
+    }
+
+    .btn-danger-solid {
+      background: var(--red);
+      color: #fff;
+    }
+
+    /* ---------- Notification ---------- */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+      transform: translate(-50%, 30px);
+      background: #3d2a31;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 200;
+      max-width: calc(100% - 40px);
+      text-align: center;
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .hidden { display: none !important; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 860px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 680px) {
+      main { padding: 16px 12px 110px; }
+      .topbar { padding-left: 14px; padding-right: 14px; }
+      .brand .script { font-size: 1.6rem; }
+      .stats { gap: 10px; margin-bottom: 16px; }
+      .stat { padding: 14px; }
+      .stat .value { font-size: 1.5rem; }
+      .toolbar { padding: 12px; }
+      .search { flex-basis: 100%; }
+      .chips { width: 100%; }
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 12px;
+      }
+      .actions .btn { padding: 12px 8px; font-size: 0.84rem; }
+      .actions .desktop-only { display: none; }
+      .table-wrap { display: none; }
+      .cards { display: block; }
+      .fab { display: flex; align-items: center; justify-content: center; }
+      .modal-backdrop { align-items: flex-end; padding: 0; }
+      .modal {
+        max-width: 100%;
+        border-radius: 22px 22px 0 0;
+        padding-bottom: calc(22px + env(safe-area-inset-bottom));
+        transform: translateY(100%);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Connexion -->
+  <div id="loginSection" class="login-wrap">
+    <form class="login-box" id="loginForm">
+      <div class="script">Rina</div>
+      <p>Espace administration<br>Entrez le mot de passe pour gérer les réponses.</p>
+      <input type="password" id="adminPassword" class="field" placeholder="Mot de passe" autocomplete="current-password" required>
+      <button type="submit" class="btn btn-primary btn-block" id="loginBtn">Se connecter</button>
+      <div class="login-error" id="loginError"></div>
+    </form>
+  </div>
+
+  <!-- Tableau de bord -->
+  <div id="adminDashboard" class="hidden">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <span class="script">Bat mitsva de Rina</span>
+          <small>Gestion des réponses</small>
+        </div>
+        <button class="btn btn-ghost" onclick="logout()">Déconnexion</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="stats">
+        <div class="stat">
+          <div class="label">Réponses</div>
+          <div class="value" id="statResponses">0</div>
+        </div>
+        <div class="stat green">
+          <div class="label">Personnes présentes</div>
+          <div class="value" id="statPresent">0</div>
+        </div>
+        <div class="stat red">
+          <div class="label">Absents</div>
+          <div class="value" id="statAbsent">0</div>
+        </div>
+        <div class="stat gold">
+          <div class="label">Familles présentes</div>
+          <div class="value" id="statFamilies">0</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="toolbar">
+          <div class="search">
+            <input type="search" id="searchInput" class="field" placeholder="Rechercher un nom ou un e-mail…">
+          </div>
+          <div class="chips" id="filterChips">
+            <button class="chip active" data-filter="all">Tous</button>
+            <button class="chip" data-filter="present">🎉 Présents</button>
+            <button class="chip" data-filter="absent">😞 Absents</button>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary desktop-only" onclick="openEditor()">＋ Ajouter</button>
+          <button class="btn btn-light" onclick="exportPDF()">📄 Export PDF</button>
+          <button class="btn btn-light" onclick="exportExcel()">📊 Export Excel</button>
+          <button class="btn btn-light" onclick="loadResponses(true)">🔄 Actualiser</button>
+          <button class="btn btn-light" onclick="confirmClearAll()">🗑️ Tout effacer</button>
+        </div>
+
+        <div id="loadingState" class="loading">
+          <div class="spinner"></div>
+          Chargement des réponses…
+        </div>
+
+        <div id="emptyState" class="empty hidden">
+          <div class="emoji">💌</div>
+          <div id="emptyText">Aucune réponse pour le moment.</div>
+        </div>
+
+        <div class="table-wrap" id="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="nom">Nom / Famille</th>
+                <th class="sortable" data-sort="email">E-mail</th>
+                <th class="sortable" data-sort="presence">Présence</th>
+                <th class="sortable" data-sort="guests">Invités</th>
+                <th class="sortable" data-sort="createdAt">Date ▼</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="cards" id="cardsList"></div>
+      </section>
+
+      <a href="/" class="footer-link">← Retour à l'invitation</a>
+    </main>
+
+    <button class="fab" onclick="openEditor()" aria-label="Ajouter une réponse">＋</button>
+  </div>
+
+  <!-- Fenêtre ajout / modification -->
+  <div class="modal-backdrop" id="editModal">
+    <form class="modal" id="editForm">
+      <h2 id="editTitle">Modifier la réponse</h2>
+      <input type="hidden" id="editId">
+
+      <div class="form-group">
+        <label for="editNom">Nom & Prénom / Famille</label>
+        <input type="text" id="editNom" class="field" required>
+      </div>
+
+      <div class="form-group">
+        <label for="editEmail">Adresse e-mail</label>
+        <input type="email" id="editEmail" class="field" required>
+      </div>
+
+      <div class="form-group">
+        <label>Présence</label>
+        <div class="segmented">
+          <input type="radio" name="editPresence" id="presYes" value="present" checked>
+          <label for="presYes">🎉 Présent(e)</label>
+          <input type="radio" name="editPresence" id="presNo" value="absent">
+          <label for="presNo">😞 Absent(e)</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="editGuests">Nombre d'invités</label>
+        <div class="stepper">
+          <button type="button" class="icon-btn" onclick="stepGuests(-1)">−</button>
+          <input type="number" id="editGuests" class="field" min="1" max="20" value="1" required>
+          <button type="button" class="icon-btn" onclick="stepGuests(1)">+</button>
+        </div>
+      </div>
+
+      <div class="modal-error" id="editError"></div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-light" onclick="closeModal('editModal')">Annuler</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Fenêtre de confirmation -->
+  <div class="modal-backdrop" id="confirmModal">
+    <div class="modal">
+      <h2 id="confirmTitle">Confirmer</h2>
+      <p id="confirmText" style="font-size: 0.92rem; color: var(--muted); line-height: 1.5;"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-light" onclick="closeModal('confirmModal')">Annuler</button>
+        <button type="button" class="btn btn-danger-solid" id="confirmBtn">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API = '/api/admin/rsvps';
+    let password = sessionStorage.getItem('rina_admin_pwd') || '';
+    let allResponses = [];
+    let currentFilter = 'all';
+    let currentSearch = '';
+    let sortKey = 'createdAt';
+    let sortDir = 'desc';
+
+    // ---------- Utilitaires ----------
+    function escapeHtml(str) {
+      return String(str ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
+        ' à ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function presenceLabel(p) {
+      return p === 'present' ? 'Présent(e)' : 'Absent(e)';
+    }
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    async function api(path = '', options = {}) {
+      const res = await fetch(API + path, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Password': password,
+          ...(options.headers || {})
+        }
+      });
+      if (res.status === 401) {
+        logout();
+        throw new Error('Session expirée, merci de vous reconnecter.');
+      }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Une erreur est survenue.');
+      }
+      return res.status === 204 ? null : res.json();
+    }
+
+    // ---------- Connexion ----------
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      const err = document.getElementById('loginError');
+      err.textContent = '';
+      btn.disabled = true;
+      btn.textContent = 'Connexion…';
+      password = document.getElementById('adminPassword').value;
+
+      try {
+        const res = await fetch(API, { headers: { 'X-Admin-Password': password } });
+        if (res.status === 401) throw new Error('Mot de passe incorrect.');
+        if (!res.ok) throw new Error('Impossible de joindre la base de données.');
+        sessionStorage.setItem('rina_admin_pwd', password);
+        showDashboard(await res.json());
+      } catch (ex) {
+        err.textContent = ex.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Se connecter';
+      }
+    });
+
+    function showDashboard(data) {
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('adminDashboard').classList.remove('hidden');
+      if (data) {
+        allResponses = data;
+        render();
+      } else {
+        loadResponses();
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('rina_admin_pwd');
+      password = '';
+      allResponses = [];
+      document.getElementById('adminPassword').value = '';
+      document.getElementById('adminDashboard').classList.add('hidden');
+      document.getElementById('loginSection').classList.remove('hidden');
+    }
+
+    // ---------- Chargement ----------
+    async function loadResponses(notify) {
+      document.getElementById('loadingState').classList.remove('hidden');
+      try {
+        allResponses = await api();
+        render();
+        if (notify) toast('Liste actualisée ✨');
+      } catch (ex) {
+        toast(ex.message);
+      } finally {
+        document.getElementById('loadingState').classList.add('hidden');
+      }
+    }
+
+    // ---------- Affichage ----------
+    function getVisibleResponses() {
+      const q = currentSearch.trim().toLowerCase();
+      const list = allResponses.filter(r =>
+        (currentFilter === 'all' || r.presence === currentFilter) &&
+        (!q || r.nom.toLowerCase().includes(q) || r.email.toLowerCase().includes(q))
+      );
+      list.sort((a, b) => {
+        let va = a[sortKey], vb = b[sortKey];
+        if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
+        if (va < vb) return sortDir === 'asc' ? -1 : 1;
+        if (va > vb) return sortDir === 'asc' ? 1 : -1;
+        return 0;
+      });
+      return list;
+    }
+
+    function renderStats() {
+      const present = allResponses.filter(r => r.presence === 'present');
+      const absent = allResponses.filter(r => r.presence === 'absent');
+      document.getElementById('statResponses').textContent = allResponses.length;
+      document.getElementById('statPresent').innerHTML = present.reduce((s, r) => s + r.guests, 0) + ' <small>pers.</small>';
+      document.getElementById('statAbsent').innerHTML = absent.reduce((s, r) => s + r.guests, 0) + ' <small>pers.</small>';
+      document.getElementById('statFamilies').textContent = present.length;
+    }
+
+    function render() {
+      document.getElementById('loadingState').classList.add('hidden');
+      renderStats();
+
+      const list = getVisibleResponses();
+      const empty = document.getElementById('emptyState');
+      const tableWrap = document.getElementById('tableWrap');
+      const cards = document.getElementById('cardsList');
+
+      if (list.length === 0) {
+        empty.classList.remove('hidden');
+        tableWrap.classList.add('hidden');
+        cards.classList.add('hidden');
+        document.getElementById('emptyText').textContent = allResponses.length === 0
+          ? 'Aucune réponse pour le moment.'
+          : 'Aucun résultat pour cette recherche.';
+        return;
+      }
+
+      empty.classList.add('hidden');
+      tableWrap.classList.remove('hidden');
+      cards.classList.remove('hidden');
+
+      document.getElementById('tableBody').innerHTML = list.map(r => `
+        <tr>
+          <td class="name">${escapeHtml(r.nom)}</td>
+          <td class="email">${escapeHtml(r.email)}</td>
+          <td><span class="badge ${r.presence}">${r.presence === 'present' ? '🎉' : '😞'} ${presenceLabel(r.presence)}</span></td>
+          <td><span class="guests-pill">${r.guests}</span></td>
+          <td class="date">${formatDate(r.createdAt)}</td>
+          <td class="row-actions">
+            <button class="icon-btn" title="Modifier" onclick="openEditor(${r.id})">✏️</button>
+            <button class="icon-btn danger" title="Supprimer" onclick="confirmDelete(${r.id})">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+
+      cards.innerHTML = list.map(r => `
+        <div class="rsvp-card">
+          <div class="row1">
+            <div>
+              <div class="name">${escapeHtml(r.nom)}</div>
+              <div class="email">${escapeHtml(r.email)}</div>
+            </div>
+            <span class="guests-pill" title="Nombre d'invités">${r.guests}</span>
+          </div>
+          <div class="row2">
+            <div class="meta">
+              <span class="badge ${r.presence}">${r.presence === 'present' ? '🎉' : '😞'} ${presenceLabel(r.presence)}</span>
+              <span>${formatDate(r.createdAt)}</span>
+            </div>
+            <div class="card-actions">
+              <button class="icon-btn" aria-label="Modifier" onclick="openEditor(${r.id})">✏️</button>
+              <button class="icon-btn danger" aria-label="Supprimer" onclick="confirmDelete(${r.id})">🗑️</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ---------- Recherche, filtres, tri ----------
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      currentSearch = e.target.value;
+      render();
+    });
+
+    document.querySelectorAll('#filterChips .chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#filterChips .chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentFilter = chip.dataset.filter;
+        render();
+      });
+    });
+
+    document.querySelectorAll('th.sortable').forEach(th => {
+      th.addEventListener('click', () => {
+        const key = th.dataset.sort;
+        if (sortKey === key) {
+          sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortKey = key;
+          sortDir = key === 'createdAt' ? 'desc' : 'asc';
+        }
+        document.querySelectorAll('th.sortable').forEach(h => h.textContent = h.textContent.replace(/ [▲▼]$/, ''));
+        th.textContent += sortDir === 'asc' ? ' ▲' : ' ▼';
+        render();
+      });
+    });
+
+    // ---------- Fenêtres ----------
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    document.querySelectorAll('.modal-backdrop').forEach(bd => {
+      bd.addEventListener('click', (e) => { if (e.target === bd) closeModal(bd.id); });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop.open').forEach(m => closeModal(m.id));
+    });
+
+    function stepGuests(delta) {
+      const input = document.getElementById('editGuests');
+      input.value = Math.min(20, Math.max(1, (parseInt(input.value) || 1) + delta));
+    }
+
+    function openEditor(id) {
+      const r = id ? allResponses.find(x => x.id === id) : null;
+      document.getElementById('editTitle').textContent = r ? 'Modifier la réponse' : 'Ajouter une réponse';
+      document.getElementById('editId').value = r ? r.id : '';
+      document.getElementById('editNom').value = r ? r.nom : '';
+      document.getElementById('editEmail').value = r ? r.email : '';
+      document.getElementById(r && r.presence === 'absent' ? 'presNo' : 'presYes').checked = true;
+      document.getElementById('editGuests').value = r ? r.guests : 1;
+      document.getElementById('editError').textContent = '';
+      openModal('editModal');
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editId').value;
+      const btn = document.getElementById('saveBtn');
+      const payload = {
+        nom: document.getElementById('editNom').value,
+        email: document.getElementById('editEmail').value,
+        presence: document.querySelector('input[name="editPresence"]:checked').value,
+        guests: document.getElementById('editGuests').value
+      };
+
+      btn.disabled = true;
+      btn.textContent = 'Enregistrement…';
+      try {
+        if (id) {
+          const updated = await api('/' + id, { method: 'PUT', body: JSON.stringify(payload) });
+          allResponses = allResponses.map(r => r.id === updated.id ? updated : r);
+          toast('Réponse modifiée ✅');
+        } else {
+          const created = await api('', { method: 'POST', body: JSON.stringify(payload) });
+          allResponses.unshift(created);
+          toast('Réponse ajoutée ✅');
+        }
+        closeModal('editModal');
+        render();
+      } catch (ex) {
+        document.getElementById('editError').textContent = ex.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Enregistrer';
+      }
+    });
+
+    function askConfirm(title, text, actionLabel, onConfirm) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmText').textContent = text;
+      const btn = document.getElementById('confirmBtn');
+      btn.textContent = actionLabel;
+      btn.onclick = async () => {
+        btn.disabled = true;
+        try {
+          await onConfirm();
+          closeModal('confirmModal');
+        } catch (ex) {
+          toast(ex.message);
+        } finally {
+          btn.disabled = false;
+        }
+      };
+      openModal('confirmModal');
+    }
+
+    function confirmDelete(id) {
+      const r = allResponses.find(x => x.id === id);
+      if (!r) return;
+      askConfirm('Supprimer cette réponse ?', `La réponse de « ${r.nom} » sera définitivement supprimée.`, 'Supprimer', async () => {
+        await api('/' + id, { method: 'DELETE' });
+        allResponses = allResponses.filter(x => x.id !== id);
+        render();
+        toast('Réponse supprimée');
+      });
+    }
+
+    function confirmClearAll() {
+      if (allResponses.length === 0) { toast('La liste est déjà vide.'); return; }
+      askConfirm('Tout effacer ?', `Les ${allResponses.length} réponses seront définitivement supprimées. Pensez à exporter la liste avant.`, 'Tout effacer', async () => {
+        await api('', { method: 'DELETE' });
+        allResponses = [];
+        render();
+        toast('Toutes les réponses ont été effacées');
+      });
+    }
+
+    // ---------- Exports ----------
+    function exportRows() {
+      return getVisibleResponses();
+    }
+
+    function exportPDF() {
+      const list = exportRows();
+      if (list.length === 0) { toast('Aucune donnée à exporter.'); return; }
+      if (!window.jspdf) { toast("L'export PDF est en cours de chargement, réessayez."); return; }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const present = list.filter(r => r.presence === 'present');
+      const absent = list.filter(r => r.presence === 'absent');
+      const nbPresent = present.reduce((s, r) => s + r.guests, 0);
+      const nbAbsent = absent.reduce((s, r) => s + r.guests, 0);
+
+      // Bandeau
+      doc.setFillColor(158, 75, 108);
+      doc.rect(0, 0, pageWidth, 30, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text('Bat Mitsva de Rina', 14, 14);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text('Mercredi 23 décembre 2026 - Salle La Vague, Saint-Brice-sous-Forêt', 14, 22);
+
+      doc.setTextColor(100, 100, 100);
+      doc.setFontSize(9);
+      doc.text('Liste générée le ' + formatDate(new Date().toISOString()), 14, 38);
+
+      // Résumé
+      const boxes = [
+        ['Réponses', String(list.length)],
+        ['Présents', nbPresent + ' pers.'],
+        ['Absents', nbAbsent + ' pers.'],
+        ['Familles présentes', String(present.length)]
+      ];
+      const boxW = (pageWidth - 28 - 9) / 4;
+      boxes.forEach(([label, value], i) => {
+        const x = 14 + i * (boxW + 3);
+        doc.setFillColor(251, 235, 238);
+        doc.roundedRect(x, 42, boxW, 18, 2, 2, 'F');
+        doc.setTextColor(130, 58, 87);
+        doc.setFontSize(8);
+        doc.text(label.toUpperCase(), x + 4, 48);
+        doc.setTextColor(50, 50, 50);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.text(value, x + 4, 56);
+        doc.setFont('helvetica', 'normal');
+      });
+
+      doc.autoTable({
+        startY: 66,
+        head: [['#', 'Nom / Famille', 'E-mail', 'Présence', 'Invités', 'Date de réponse']],
+        body: list.map((r, i) => [i + 1, r.nom, r.email, presenceLabel(r.presence), r.guests, formatDate(r.createdAt)]),
+        headStyles: { fillColor: [158, 75, 108], textColor: 255, fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [251, 235, 238] },
+        styles: { font: 'helvetica', fontSize: 9, cellPadding: 3 },
+        columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 4: { halign: 'center' } },
+        didParseCell: (data) => {
+          if (data.section === 'body' && data.column.index === 3) {
+            data.cell.styles.textColor = data.cell.raw === 'Présent(e)' ? [46, 125, 50] : [198, 40, 40];
+            data.cell.styles.fontStyle = 'bold';
+          }
+        },
+        didDrawPage: () => {
+          const h = doc.internal.pageSize.getHeight();
+          doc.setFontSize(8);
+          doc.setTextColor(150, 150, 150);
+          doc.text('Page ' + doc.internal.getNumberOfPages(), pageWidth - 14, h - 8, { align: 'right' });
+        }
+      });
+
+      doc.save('Reponses_Bat_Mitsva_Rina.pdf');
+      toast('PDF téléchargé 📄');
+    }
+
+    function exportExcel() {
+      const list = exportRows();
+      if (list.length === 0) { toast('Aucune donnée à exporter.'); return; }
+      if (!window.XLSX) { toast("L'export Excel est en cours de chargement, réessayez."); return; }
+
+      const rows = list.map(r => ({
+        'Nom / Famille': r.nom,
+        'E-mail': r.email,
+        'Présence': presenceLabel(r.presence),
+        "Nombre d'invités": r.guests,
+        'Date de réponse': formatDate(r.createdAt)
+      }));
+      const ws = XLSX.utils.json_to_sheet(rows);
+      ws['!cols'] = [{ wch: 28 }, { wch: 30 }, { wch: 14 }, { wch: 16 }, { wch: 22 }];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Réponses');
+      XLSX.writeFile(wb, 'Reponses_Bat_Mitsva_Rina.xlsx');
+      toast('Fichier Excel téléchargé 📊');
+    }
+
+    // Reconnexion automatique pendant la session
+    if (password) {
+      showDashboard(null);
+    }
+  </script>
+</body>
+</html>

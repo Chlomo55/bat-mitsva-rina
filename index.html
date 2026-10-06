@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bat Mitsva de Rina - Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #9e4b6c;
+      --primary-dark: #823a57;
+      --accent: #f4c2c2;
+      --accent-light: #fbebee;
+      --bg-gradient: linear-gradient(135deg, #fdf6f6 0%, #fae8eb 100%);
+      --card-bg: #ffffff;
+      --text: #4a3e3d;
+      --text-muted: #7e6c6e;
+      --shadow: 0 15px 35px rgba(158, 75, 108, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      max-width: 520px;
+      width: 100%;
+      background: var(--card-bg);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(244, 194, 194, 0.4);
+      margin: 20px 0;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .banner-img {
+      width: 100%;
+      display: block;
+      border-bottom: 3px solid var(--accent);
+    }
+
+    .content {
+      padding: 35px 28px;
+      text-align: center;
+    }
+
+    .title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3.5rem;
+      color: var(--primary);
+      margin-bottom: 5px;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--primary-dark);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .icon-robe {
+    width: 20px; /* Ajustez selon la taille souhaitée */
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+    .event-info {
+      background-color: var(--accent-light);
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 25px;
+      border: 1px solid rgba(232, 180, 184, 0.3);
+    }
+
+    .info-item {
+      margin: 8px 0;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .info-item strong {
+      color: var(--primary);
+    }
+
+    .deadline-badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 14px;
+      background: var(--primary);
+      color: white;
+      font-size: 0.82rem;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .gps-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .gps-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      transition: transform 0.2s;
+    }
+
+    .gps-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .gps-waze {
+      background-color: #e5f7fd;
+      color: #05b1e6;
+      border: 1px solid #b3e9fa;
+    }
+
+    .gps-maps {
+      background-color: #f1f8e9;
+      color: #34a853;
+      border: 1px solid #c8e6c9;
+    }
+
+    .gps-btn img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .calendar-container {
+      margin: 20px 0;
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn-calendar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      min-height: 48px;
+      border: 1.5px solid var(--primary);
+      border-radius: 30px;
+      background: white;
+      color: var(--primary);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn-calendar:active {
+      transform: scale(0.97);
+      background: var(--accent-light);
+    }
+
+    .calendar-options {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 320px;
+      margin: 14px auto 0;
+    }
+
+    .calendar-options.open {
+      display: flex;
+    }
+
+    .calendar-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      min-height: 48px;
+      border-radius: 12px;
+      border: 1px solid #e2d2d5;
+      background: #faf7f8;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.92rem;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .calendar-option:active {
+      background: var(--accent-light);
+    }
+
+    .calendar-option.recommended {
+      border-color: var(--primary);
+      background: var(--accent-light);
+      font-weight: 600;
+    }
+
+    .calendar-option .cal-icon {
+      font-size: 1.25rem;
+      width: 26px;
+      text-align: center;
+    }
+
+    .calendar-hint {
+      display: none;
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--primary-dark);
+      line-height: 1.4;
+    }
+
+    .info-item.audience {
+      margin-top: 12px;
+    }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #e2d2d5;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text);
+      background-color: #faf7f8;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      background-color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(158, 75, 108, 0.1);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(158, 75, 108, 0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(158, 75, 108, 0.35);
+    }
+
+    .admin-link {
+      display: inline-block;
+      margin-top: 25px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+
+    .admin-link:hover {
+      color: var(--primary);
+    }
+
+    .success-message {
+      display: none;
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 15px;
+      border-radius: 12px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      border: 1px solid #c8e6c9;
+    }
+
+    .error-message {
+      display: none;
+      background: #ffebee;
+      color: #c62828;
+      padding: 15px;
+      border-radius: 12px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      border: 1px solid #ffcdd2;
+    }
+
+    .audio-control {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 10000;
+    }
+
+    .audio-control.hidden {
+      display: none;
+    }
+
+    .splash {
+      position: fixed;
+      inset: 0;
+      z-index: 20000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 30px;
+      text-align: center;
+      background: var(--bg-gradient);
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .splash.closed {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .splash-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3.8rem;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    .splash-subtitle {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+
+    .splash-btn {
+      margin-top: 10px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      padding: 16px 34px;
+      border-radius: 50px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(158, 75, 108, 0.3);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    body.splash-open {
+      overflow: hidden;
+    }
+
+    body.splash-open .card {
+      animation: none;
+    }
+  </style>
+</head>
+<body class="splash-open">
+
+  <!-- Écran d'accueil : le clic sur le bouton ouvre l'invitation et lance la musique -->
+  <div id="splash" class="splash">
+    <div class="splash-subtitle">Vous êtes invitées à la</div>
+    <div class="splash-title">Bat mitsva de Rina</div>
+    <button class="splash-btn" id="openInvitation" onclick="openInvitation()">✉️ Voir l'invitation</button>
+  </div>
+
+  <!-- Player Audio YouTube masqué (hors écran pour que la lecture reste autorisée) -->
+  <iframe id="music-iframe" 
+          src="https://www.youtube.com/embed/99Sh8_SYe9E?start=28&enablejsapi=1&playsinline=1" 
+          allow="autoplay" 
+          style="position:absolute; left:-9999px; top:0; width:1px; height:1px; border:0;"></iframe>
+
+  <button class="audio-control hidden" id="audioControl" onclick="toggleAudio()">
+    <span id="audioIcon">🎵</span> <span id="audioText">Son On</span>
+  </button>
+
+  <div class="card">
+    <img class="banner-img" src="invitation.png" alt="Bat Mitsva Rina">
+
+    <div class="content">
+      <div class="title">Bat mitsva</div>
+      <div class="subtitle">Rina</div>
+
+      <div class="event-info">
+        <div class="info-item">📅 <strong>Mercredi 23 Décembre 2026</strong> à <strong>14 heures précises</strong></div>
+        <div class="info-item">📍 <strong>Salle "La Vague"</strong></div>
+        <div class="info-item">5 bis rue de la Forêt, Saint-Brice-sous-Forêt</div>
+        <div class="info-item audience">
+            <img src="robe.png" alt="Robe" class="icon-robe">
+            <strong>Public exclusivement féminin</strong>
+        </div>        
+        <div class="info-item">⚠️  <strong>Une partie du buffet sera halavi</strong>.</div>
+        <div class="deadline-badge">Réponse souhaitée avant le 13/12/2026</div>
+      </div>
+
+      <div class="gps-buttons">
+        <a class="gps-btn gps-waze" href="https://waze.com/ul?q=5+bis+rue+de+la+foret+Saint+Brice+sous+foret&navigate=yes" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/732/732257.png" alt="Waze">
+          Waze
+        </a>
+        <a class="gps-btn gps-maps" href="https://www.google.com/maps/dir/?api=1&destination=5+bis+rue+de+la+foret+Saint+Brice+sous+foret" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google Maps">
+          Google Maps
+        </a>
+      </div>
+
+      <!-- CONTENEUR DU CALENDRIER -->
+<div class="calendar-container" id="calendarWidget">
+  <button type="button" class="btn-calendar" id="calendarToggle" aria-expanded="false" aria-controls="calendarOptions">
+    📅 Ajouter à mon calendrier
+  </button>
+  
+  <div class="calendar-options" id="calendarOptions" hidden>
+    <a class="calendar-option" id="calPrimary" href="#" target="_blank" rel="noopener">
+      <span class="cal-icon" id="primaryIcon">📆</span>
+      <span id="primaryText">Ajouter au calendrier</span>
+    </a>
+    <a class="calendar-option" id="calGoogle" target="_blank" rel="noopener">
+      <span class="cal-icon">📆</span> Google Agenda
+    </a>
+    <a class="calendar-option" id="calApple" href="#">
+      <span class="cal-icon">🍎</span> Apple (iPhone / Mac)
+    </a>
+    <a class="calendar-option" id="calOutlook" target="_blank" rel="noopener">
+      <span class="cal-icon">📧</span> Outlook / Office 365
+    </a>
+    <a class="calendar-option" id="calIcs" download="evenement.ics">
+      <span class="cal-icon">⬇️</span> Fichier iCal (.ics)
+    </a>
+  </div>
+
+  <!-- Astuce affichée uniquement si l'utilisateur est dans un navigateur web intégré (Instagram, WhatsApp, etc.) -->
+  <div class="calendar-hint" id="calendarHint" style="display: none;">
+    💡 Si le téléchargement ne se lance pas, appuyez sur <strong>•••</strong> puis <strong>« Ouvrir dans Safari / Chrome »</strong>.
+  </div>
+</div>
+
+<!-- STYLES CSS (À intégrer dans votre CSS) -->
+<style>
+  .calendar-container {
+    position: relative;
+    display: inline-block;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    width: 100%;
+    max-width: 320px;
+    margin: 10px 0;
+  }
+
+  .btn-calendar {
+    width: 100%;
+    padding: 12px 20px;
+    color: #524b88;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+
+
+  .btn-calendar:active {
+    transform: scale(0.98);
+  }
+
+  .calendar-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .calendar-options[hidden] {
+    display: none;
+  }
+
+  .calendar-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    color: #1f2937;
+    text-decoration: none;
+    font-size: 14px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.15s;
+  }
+
+  .calendar-option:last-child {
+    border-bottom: none;
+  }
+
+  .calendar-option:hover {
+    background-color: #f9fafb;
+  }
+
+  .cal-icon {
+    margin-right: 12px;
+    font-size: 18px;
+  }
+
+  .calendar-hint {
+    margin-top: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #854d0e;
+    background-color: #fef9c3;
+    border: 1px solid #fef08a;
+    border-radius: 6px;
+    line-height: 1.4;
+  }
+</style>
+
+<!-- SCRIPT JAVASCRIPT PERFORMANTS ET ADAPTATIFS -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // 1. CONFIGURATION DE L'ÉVÉNEMENT
+  const EVENT_DATA = {
+    title: "Bat Mitsva de Rina",
+    description: "14 heures précises. Public exclusivement féminin. Attention buffet halavi. Réponse souhaitée avant le 13/12/2026.",
+    location: "Salle La Vague, 5 bis rue de la Forêt, 95350 Saint-Brice-sous-Forêt",
+    start: "2026-12-23T14:00:00", // Format ISO
+    end: "2026-12-23T19:00:00",   // Format ISO
+    timeZone: "Europe/Paris"
+  };
+
+  // 2. ÉLÉMENTS DU DOM
+  const toggleBtn = document.getElementById("calendarToggle");
+  const optionsMenu = document.getElementById("calendarOptions");
+  const primaryOption = document.getElementById("calPrimary");
+  const primaryText = document.getElementById("primaryText");
+  const primaryIcon = document.getElementById("primaryIcon");
+  const hintBox = document.getElementById("calendarHint");
+
+  // 3. HELPER ISO/UTC POUR LES LIENS
+  const formatDateISO = (dateStr) => dateStr.replace(/[-:]/g, "");
+
+  // Génération des URLs
+  const startISO = formatDateISO(EVENT_DATA.start);
+  const endISO = formatDateISO(EVENT_DATA.end);
+
+  const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(EVENT_DATA.title)}&dates=${startISO}/${endISO}&ctz=${EVENT_DATA.timeZone}&details=${encodeURIComponent(EVENT_DATA.description)}&location=${encodeURIComponent(EVENT_DATA.location)}`;
+  
+  const outlookUrl = `https://outlook.live.com/calendar/0/action/compose?rru=addevent&subject=${encodeURIComponent(EVENT_DATA.title)}&startdt=${EVENT_DATA.start}&enddt=${EVENT_DATA.end}&body=${encodeURIComponent(EVENT_DATA.description)}&location=${encodeURIComponent(EVENT_DATA.location)}`;
+
+  // Génération dynamique d'un contenu .ICS (data-URI) sans nécessiter de fichier serveur
+  const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Event Calendar//FR
+BEGIN:VEVENT
+SUMMARY:${EVENT_DATA.title}
+DESCRIPTION:${EVENT_DATA.description.replace(/\n/g, '\\n')}
+LOCATION:${EVENT_DATA.location}
+DTSTART:${startISO}
+DTEND:${endISO}
+END:VEVENT
+END:VCALENDAR`;
+
+  const icsBlobUrl = 'data:text/calendar;charset=utf8,' + encodeURIComponent(icsContent);
+
+  // Affectation des liens
+  document.getElementById("calGoogle").href = googleUrl;
+  document.getElementById("calOutlook").href = outlookUrl;
+  document.getElementById("calIcs").href = icsBlobUrl;
+  document.getElementById("calIcs").download = `${EVENT_DATA.title.toLowerCase().replace(/\s+/g, '-')}.ics`;
+  document.getElementById("calApple").href = icsBlobUrl;
+
+  // 4. DÉTECTION DE L'APPAREIL ET DU NAVIGATEUR INTEGRÉ
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/i.test(ua);
+  const isInAppBrowser = /FBAN|FBAV|Instagram|LinkedIn|Snapchat|TikTok|MicroMessenger|WhatsApp/i.test(ua);
+
+  // Adapter le premier choix en fonction de l'OS
+  if (isIOS) {
+    primaryText.textContent = "Apple Calendar (iPhone/Mac)";
+    primaryIcon.textContent = "🍎";
+    primaryOption.href = icsBlobUrl;
+    primaryOption.removeAttribute("target");
+  } else if (isAndroid) {
+    primaryText.textContent = "Google Agenda (Android)";
+    primaryIcon.textContent = "📆";
+    primaryOption.href = googleUrl;
+  } else {
+    // Ordinateurs et autres
+    primaryText.textContent = "Google Agenda";
+    primaryIcon.textContent = "📆";
+    primaryOption.href = googleUrl;
+  }
+
+  // Afficher l'avertissement uniquement si dans une appli mobile (ex: Instagram)
+  if (isInAppBrowser) {
+    hintBox.style.display = "block";
+  }
+
+  // 5. GESTION DU MENU DÉOULANT (ACCESSIBILITÉ & FLUIDITÉ)
+  toggleBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
+    toggleBtn.setAttribute("aria-expanded", !isExpanded);
+    optionsMenu.hidden = isExpanded;
+  });
+
+  // Fermer le menu si on clique en dehors
+  document.addEventListener("click", function (e) {
+    if (!optionsMenu.contains(e.target) && e.target !== toggleBtn) {
+      optionsMenu.hidden = true;
+      toggleBtn.setAttribute("aria-expanded", "false");
+    }
+  });
+});
+</script>
+
+      <div id="successMsg" class="success-message">
+        ✨ Votre réponse a bien été enregistrée ! Merci beaucoup.
+      </div>
+
+      <div id="errorMsg" class="error-message"></div>
+
+      <form id="rsvpForm">
+        <div class="form-group">
+          <label for="name">Nom & Prénom / Famille</label>
+          <input type="text" id="name" name="nom" required placeholder="Ex: Famille Dupont">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Adresse E-mail</label>
+          <input type="email" id="email" name="email" required placeholder="exemple@mail.com">
+        </div>
+
+        <div class="form-group">
+          <label for="presence">Présence</label>
+          <select id="presence" name="presence" required>
+            <option value="present">Sera présente(s) 🎉</option>
+            <option value="absent">Ne pourra pas venir 😞</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="guestsGroup">
+          <label for="guests">Nombre d'invitées</label>
+          <input type="number" id="guests" name="nombre_personnes" min="1" max="10" value="1" required>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">Confirmer ma présence</button>
+      </form>
+
+      <a href="admin.html" class="admin-link">Espace Administration</a>
+    </div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    let player;
+    let soundEnabled = false;
+
+    let playerReady = false;
+    let playRequested = false;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('music-iframe', {
+        events: {
+          'onReady': () => {
+            playerReady = true;
+            if (playRequested) startMusic();
+          }
+        }
+      });
+    }
+
+    function startMusic() {
+      if (!playerReady) {
+        playRequested = true;
+        return;
+      }
+      player.unMute();
+      player.setVolume(100);
+      player.seekTo(28);
+      player.playVideo();
+      document.getElementById('audioText').innerText = "Son On";
+      soundEnabled = true;
+    }
+
+    function openInvitation() {
+      startMusic();
+      document.getElementById('splash').classList.add('closed');
+      document.body.classList.remove('splash-open');
+      document.getElementById('audioControl').classList.remove('hidden');
+    }
+
+    function toggleAudio() {
+      if (!playerReady) return;
+      if (soundEnabled) {
+        player.pauseVideo();
+        document.getElementById('audioText').innerText = "Son Off";
+        soundEnabled = false;
+      } else {
+        player.unMute();
+        player.setVolume(100);
+        player.playVideo();
+        document.getElementById('audioText').innerText = "Son On";
+        soundEnabled = true;
+      }
+    }
+
+    // Ajout au calendrier : on met en avant l'option adaptée à l'appareil
+    (function setupCalendar() {
+      const ua = navigator.userAgent || '';
+      const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isAndroid = /Android/i.test(ua);
+      const isInApp = /FBAN|FBAV|Instagram|Line\/|Snapchat|TikTok|musical_ly|LinkedInApp/i.test(ua);
+      const toggle = document.getElementById('calendarToggle');
+      const options = document.getElementById('calendarOptions');
+      const apple = document.getElementById('calApple');
+      const google = document.getElementById('calGoogle');
+
+      if (isIOS) {
+        apple.classList.add('recommended');
+        // Sur iPhone, le lien .ics direct ouvre la fiche native "Ajouter au calendrier"
+        document.getElementById('calIcs').style.display = 'none';
+      } else if (isAndroid) {
+        google.classList.add('recommended');
+        options.insertBefore(google, options.firstChild);
+      }
+      if (isInApp) {
+        document.getElementById('calendarHint').style.display = 'block';
+      }
+
+      toggle.addEventListener('click', () => {
+        const open = options.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    })();
+
+    // Le nombre d'invités n'est demandé que si la personne est présente
+    function updateGuestsVisibility() {
+      const isPresent = document.getElementById('presence').value === 'present';
+      const guestsInput = document.getElementById('guests');
+      document.getElementById('guestsGroup').style.display = isPresent ? '' : 'none';
+      guestsInput.required = isPresent;
+      guestsInput.disabled = !isPresent;
+    }
+    document.getElementById('presence').addEventListener('change', updateGuestsVisibility);
+    updateGuestsVisibility();
+
+    // Enregistrement de la réponse dans la base de données
+    document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const successMsg = document.getElementById('successMsg');
+      const errorMsg = document.getElementById('errorMsg');
+      btn.innerText = "Enregistrement...";
+      btn.disabled = true;
+      errorMsg.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/rsvp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nom: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            presence: document.getElementById('presence').value,
+            guests: document.getElementById('presence').value === 'present'
+              ? document.getElementById('guests').value
+              : 1
+          })
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || "Une erreur est survenue, merci de réessayer.");
+        }
+        successMsg.style.display = 'block';
+        document.getElementById('rsvpForm').reset();
+        updateGuestsVisibility();
+        setTimeout(() => { successMsg.style.display = 'none'; }, 6000);
+      } catch (err) {
+        errorMsg.innerText = err.message || "Une erreur est survenue, merci de réessayer.";
+        errorMsg.style.display = 'block';
+      } finally {
+        btn.innerText = "Confirmer ma présence";
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
