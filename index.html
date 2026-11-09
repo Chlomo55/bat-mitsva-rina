@@ -503,124 +503,33 @@
   </div>
 </div>
 
-<!-- STYLES CSS (À intégrer dans votre CSS) -->
-<style>
-  .calendar-container {
-    position: relative;
-    display: inline-block;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    width: 100%;
-    max-width: 320px;
-    margin: 10px 0;
-  }
-
-  .btn-calendar {
-    width: 100%;
-    padding: 12px 20px;
-    color: #524b88;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-
-
-
-  .btn-calendar:active {
-    transform: scale(0.98);
-  }
-
-  .calendar-options {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    z-index: 50;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .calendar-options[hidden] {
-    display: none;
-  }
-
-  .calendar-option {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    color: #1f2937;
-    text-decoration: none;
-    font-size: 14px;
-    border-bottom: 1px solid #f3f4f6;
-    transition: background-color 0.15s;
-  }
-
-  .calendar-option:last-child {
-    border-bottom: none;
-  }
-
-  .calendar-option:hover {
-    background-color: #f9fafb;
-  }
-
-  .cal-icon {
-    margin-right: 12px;
-    font-size: 18px;
-  }
-
-  .calendar-hint {
-    margin-top: 10px;
-    padding: 8px 12px;
-    font-size: 12px;
-    color: #854d0e;
-    background-color: #fef9c3;
-    border: 1px solid #fef08a;
-    border-radius: 6px;
-    line-height: 1.4;
-  }
-</style>
-
-<!-- SCRIPT JAVASCRIPT PERFORMANTS ET ADAPTATIFS -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  // 1. CONFIGURATION DE L'ÉVÉNEMENT
   const EVENT_DATA = {
     title: "Bat Mitsva de Rina",
     description: "14 heures précises. Public exclusivement féminin. Attention buffet halavi. Réponse souhaitée avant le 13/12/2026.",
     location: "Salle La Vague, 5 bis rue de la Forêt, 95350 Saint-Brice-sous-Forêt",
-    start: "2026-12-23T14:00:00", // Format ISO
-    end: "2026-12-23T19:00:00",   // Format ISO
+    start: "2026-12-23T14:00:00",
+    end: "2026-12-23T19:00:00",
     timeZone: "Europe/Paris"
   };
 
-  // 2. ÉLÉMENTS DU DOM
   const toggleBtn = document.getElementById("calendarToggle");
   const optionsMenu = document.getElementById("calendarOptions");
   const primaryOption = document.getElementById("calPrimary");
   const primaryText = document.getElementById("primaryText");
   const primaryIcon = document.getElementById("primaryIcon");
   const hintBox = document.getElementById("calendarHint");
+  const apple = document.getElementById("calApple");
+  const google = document.getElementById("calGoogle");
 
-  // 3. HELPER ISO/UTC POUR LES LIENS
   const formatDateISO = (dateStr) => dateStr.replace(/[-:]/g, "");
-
-  // Génération des URLs
   const startISO = formatDateISO(EVENT_DATA.start);
   const endISO = formatDateISO(EVENT_DATA.end);
 
   const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(EVENT_DATA.title)}&dates=${startISO}/${endISO}&ctz=${EVENT_DATA.timeZone}&details=${encodeURIComponent(EVENT_DATA.description)}&location=${encodeURIComponent(EVENT_DATA.location)}`;
-  
   const outlookUrl = `https://outlook.live.com/calendar/0/action/compose?rru=addevent&subject=${encodeURIComponent(EVENT_DATA.title)}&startdt=${EVENT_DATA.start}&enddt=${EVENT_DATA.end}&body=${encodeURIComponent(EVENT_DATA.description)}&location=${encodeURIComponent(EVENT_DATA.location)}`;
 
-  // Génération dynamique d'un contenu .ICS (data-URI) sans nécessiter de fichier serveur
   const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Event Calendar//FR
@@ -635,54 +544,55 @@ END:VCALENDAR`;
 
   const icsBlobUrl = 'data:text/calendar;charset=utf8,' + encodeURIComponent(icsContent);
 
-  // Affectation des liens
-  document.getElementById("calGoogle").href = googleUrl;
+  google.href = googleUrl;
   document.getElementById("calOutlook").href = outlookUrl;
   document.getElementById("calIcs").href = icsBlobUrl;
   document.getElementById("calIcs").download = `${EVENT_DATA.title.toLowerCase().replace(/\s+/g, '-')}.ics`;
-  document.getElementById("calApple").href = icsBlobUrl;
+  apple.href = icsBlobUrl;
 
-  // 4. DÉTECTION DE L'APPAREIL ET DU NAVIGATEUR INTEGRÉ
   const ua = navigator.userAgent || navigator.vendor || window.opera;
   const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const isAndroid = /Android/i.test(ua);
-  const isInAppBrowser = /FBAN|FBAV|Instagram|LinkedIn|Snapchat|TikTok|MicroMessenger|WhatsApp/i.test(ua);
+  const isInAppBrowser = /FBAN|FBAV|Instagram|LinkedIn|Snapchat|TikTok|MicroMessenger|WhatsApp|Line\/|musical_ly|LinkedInApp/i.test(ua);
 
-  // Adapter le premier choix en fonction de l'OS
   if (isIOS) {
     primaryText.textContent = "Apple Calendar (iPhone/Mac)";
     primaryIcon.textContent = "🍎";
     primaryOption.href = icsBlobUrl;
     primaryOption.removeAttribute("target");
+    apple.classList.add("recommended");
+    document.getElementById("calIcs").style.display = "none";
   } else if (isAndroid) {
     primaryText.textContent = "Google Agenda (Android)";
     primaryIcon.textContent = "📆";
     primaryOption.href = googleUrl;
+    google.classList.add("recommended");
+    optionsMenu.insertBefore(google, optionsMenu.children[1] || null);
   } else {
-    // Ordinateurs et autres
     primaryText.textContent = "Google Agenda";
     primaryIcon.textContent = "📆";
     primaryOption.href = googleUrl;
+    google.classList.add("recommended");
   }
 
-  // Afficher l'avertissement uniquement si dans une appli mobile (ex: Instagram)
   if (isInAppBrowser) {
     hintBox.style.display = "block";
   }
 
-  // 5. GESTION DU MENU DÉOULANT (ACCESSIBILITÉ & FLUIDITÉ)
+  function setMenuOpen(open) {
+    toggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    optionsMenu.hidden = !open;
+    optionsMenu.classList.toggle("open", open);
+  }
+
   toggleBtn.addEventListener("click", function (e) {
     e.stopPropagation();
-    const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
-    toggleBtn.setAttribute("aria-expanded", !isExpanded);
-    optionsMenu.hidden = isExpanded;
+    setMenuOpen(toggleBtn.getAttribute("aria-expanded") !== "true");
   });
 
-  // Fermer le menu si on clique en dehors
   document.addEventListener("click", function (e) {
     if (!optionsMenu.contains(e.target) && e.target !== toggleBtn) {
-      optionsMenu.hidden = true;
-      toggleBtn.setAttribute("aria-expanded", "false");
+      setMenuOpen(false);
     }
   });
 });
@@ -778,35 +688,6 @@ END:VCALENDAR`;
         soundEnabled = true;
       }
     }
-
-    // Ajout au calendrier : on met en avant l'option adaptée à l'appareil
-    (function setupCalendar() {
-      const ua = navigator.userAgent || '';
-      const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      const isAndroid = /Android/i.test(ua);
-      const isInApp = /FBAN|FBAV|Instagram|Line\/|Snapchat|TikTok|musical_ly|LinkedInApp/i.test(ua);
-      const toggle = document.getElementById('calendarToggle');
-      const options = document.getElementById('calendarOptions');
-      const apple = document.getElementById('calApple');
-      const google = document.getElementById('calGoogle');
-
-      if (isIOS) {
-        apple.classList.add('recommended');
-        // Sur iPhone, le lien .ics direct ouvre la fiche native "Ajouter au calendrier"
-        document.getElementById('calIcs').style.display = 'none';
-      } else if (isAndroid) {
-        google.classList.add('recommended');
-        options.insertBefore(google, options.firstChild);
-      }
-      if (isInApp) {
-        document.getElementById('calendarHint').style.display = 'block';
-      }
-
-      toggle.addEventListener('click', () => {
-        const open = options.classList.toggle('open');
-        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-    })();
 
     // Le nombre d'invités n'est demandé que si la personne est présente
     function updateGuestsVisibility() {

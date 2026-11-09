@@ -1,12 +1,25 @@
-=== INSTRUCTIONS POUR DÉPLOYER SUR NETLIFY ===
+=== Bat Mitsva de Rina ===
 
-1. Téléchargez et dézippez le fichier 'site_bat_mitsva_rina.zip' sur votre ordinateur.
-2. Assurez-vous que le dossier contient :
-   - index.html
-   - invitation.png
-3. Ouvrez votre navigateur et allez sur : https://app.netlify.com/drop
-4. Glissez-déposez le dossier complet 'site_bat_mitsva_rina' sur la page Netlify.
-5. Votre site est instantanément en ligne ! 
+Invitation en ligne + formulaire de réponse (RSVP) + espace d'administration.
 
-Mot de passe par défaut pour l'espace d'administration sur le site : 1234
-(Vous pouvez le modifier dans le fichier index.html en ouvrant le fichier avec un bloc-notes et en cherchant '1234').
+--- Lancer en local ---
+
+1. npm install
+2. npm run dev
+3. Ouvrir http://127.0.0.1:4173
+4. Admin : http://127.0.0.1:4173/admin.html
+   Mot de passe par défaut : 1234
+
+En local, les réponses sont enregistrées dans data/rsvps.json.
+
+--- Déployer sur Netlify ---
+
+Le stockage en production utilise Netlify Blobs (aucune base Supabase requise).
+
+1. npm install
+2. npx netlify login
+3. npm run deploy
+   (crée le site si besoin, pose ADMIN_PASSWORD=1234, déploie en production)
+
+Variables d'environnement optionnelles sur Netlify :
+- ADMIN_PASSWORD (défaut côté code : 1234)
