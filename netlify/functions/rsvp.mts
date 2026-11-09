@@ -1,6 +1,5 @@
 import type { Config } from "@netlify/functions";
-import { db } from "../../db/index.js";
-import { rsvps } from "../../db/schema.js";
+import { supabase, toClient } from "../../db/supabase.js";
 import { parseRsvp } from "../../db/validate.js";
 
 export default async (req: Request) => {
@@ -20,10 +19,15 @@ export default async (req: Request) => {
     return Response.json({ error: "Merci de renseigner un nom et un e-mail valides." }, { status: 400 });
   }
 
-  const [created] = await db.insert(rsvps).values(data).returning();
-  return Response.json(created, { status: 201 });
+  try {
+    const rows = await supabase("", { method: "POST", body: JSON.stringify(data) });
+    return Response.json(toClient(rows[0]), { status: 201 });
+  } catch (e) {
+    return Response.json({ error: "Impossible d'enregistrer votre réponse pour le moment." }, { status: 500 });
+  }
 };
 
 export const config: Config = {
   path: "/api/rsvp",
 };
+
