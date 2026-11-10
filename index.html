@@ -474,15 +474,23 @@
 
       <!-- CONTENEUR DU CALENDRIER -->
 
-  <div class="calendar-container" id="calendarWidget">
-  <button type="button" class="btn-calendar" id="calendarBtn">
+ 
+<div class="calendar-container" id="calendarWidget">
+  <a class="btn-calendar" id="calendarBtn" href="calendar.ics">
     📅 Ajouter à mon calendrier
-  </button>
+  </a>
   <div class="calendar-hint" id="calendarHint" hidden>
     💡 Si rien ne se passe, appuyez sur <strong>•••</strong> puis
     <strong>« Ouvrir dans Safari / Chrome »</strong>.
   </div>
 </div>
+
+<script>
+  const ua = navigator.userAgent || "";
+  if (/FBAN|FBAV|Instagram|LinkedIn|Snapchat|TikTok|MicroMessenger|WhatsApp|Line\/|musical_ly/i.test(ua)) {
+    document.getElementById("calendarHint").hidden = false;
+  }
+</script>
 
 
 
