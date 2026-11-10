@@ -473,130 +473,83 @@
       </div>
 
       <!-- CONTENEUR DU CALENDRIER -->
-<div class="calendar-container" id="calendarWidget">
-  <button type="button" class="btn-calendar" id="calendarToggle" aria-expanded="false" aria-controls="calendarOptions">
+
+  <div class="calendar-container" id="calendarWidget">
+  <button type="button" class="btn-calendar" id="calendarBtn">
     📅 Ajouter à mon calendrier
   </button>
-  
-  <div class="calendar-options" id="calendarOptions" hidden>
-    <a class="calendar-option" id="calPrimary" href="#" target="_blank" rel="noopener">
-      <span class="cal-icon" id="primaryIcon">📆</span>
-      <span id="primaryText">Ajouter au calendrier</span>
-    </a>
-    <a class="calendar-option" id="calGoogle" target="_blank" rel="noopener">
-      <span class="cal-icon">📆</span> Google Agenda
-    </a>
-    <a class="calendar-option" id="calApple" href="#">
-      <span class="cal-icon">🍎</span> Apple (iPhone / Mac)
-    </a>
-    <a class="calendar-option" id="calOutlook" target="_blank" rel="noopener">
-      <span class="cal-icon">📧</span> Outlook / Office 365
-    </a>
-    <a class="calendar-option" id="calIcs" download="evenement.ics">
-      <span class="cal-icon">⬇️</span> Fichier iCal (.ics)
-    </a>
-  </div>
-
-  <!-- Astuce affichée uniquement si l'utilisateur est dans un navigateur web intégré (Instagram, WhatsApp, etc.) -->
-  <div class="calendar-hint" id="calendarHint" style="display: none;">
-    💡 Si le téléchargement ne se lance pas, appuyez sur <strong>•••</strong> puis <strong>« Ouvrir dans Safari / Chrome »</strong>.
+  <div class="calendar-hint" id="calendarHint" hidden>
+    💡 Si rien ne se passe, appuyez sur <strong>•••</strong> puis
+    <strong>« Ouvrir dans Safari / Chrome »</strong>.
   </div>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const EVENT_DATA = {
+(function () {
+  const EVENT = {
     title: "Bat Mitsva de Rina",
     description: "14 heures précises. Public exclusivement féminin. Attention buffet halavi. Réponse souhaitée avant le 13/12/2026.",
     location: "Salle La Vague, 5 bis rue de la Forêt, 95350 Saint-Brice-sous-Forêt",
-    start: "2026-12-23T14:00:00",
-    end: "2026-12-23T19:00:00",
-    timeZone: "Europe/Paris"
+    // 14h–19h heure de Paris (UTC+1 en décembre) = 13h–18h UTC
+    startUTC: "20261223T130000Z",
+    endUTC: "20261223T180000Z"
   };
 
-  const toggleBtn = document.getElementById("calendarToggle");
-  const optionsMenu = document.getElementById("calendarOptions");
-  const primaryOption = document.getElementById("calPrimary");
-  const primaryText = document.getElementById("primaryText");
-  const primaryIcon = document.getElementById("primaryIcon");
-  const hintBox = document.getElementById("calendarHint");
-  const apple = document.getElementById("calApple");
-  const google = document.getElementById("calGoogle");
+  const esc = (s) => s.replace(/\\/g, "\\\\").replace(/;/g, "\\;")
+                      .replace(/,/g, "\\,").replace(/\n/g, "\\n");
+  const stamp = new Date().toISOString().replace(/[-:]|\.\d{3}/g, "");
 
-  const formatDateISO = (dateStr) => dateStr.replace(/[-:]/g, "");
-  const startISO = formatDateISO(EVENT_DATA.start);
-  const endISO = formatDateISO(EVENT_DATA.end);
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Bat Mitsva Rina//FR",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    "UID:bat-mitsva-rina-20261223@invitation",
+    "DTSTAMP:" + stamp,
+    "DTSTART:" + EVENT.startUTC,
+    "DTEND:" + EVENT.endUTC,
+    "SUMMARY:" + esc(EVENT.title),
+    "DESCRIPTION:" + esc(EVENT.description),
+    "LOCATION:" + esc(EVENT.location),
+    "BEGIN:VALARM",
+    "TRIGGER:-P1D",
+    "ACTION:DISPLAY",
+    "DESCRIPTION:Rappel : " + esc(EVENT.title),
+    "END:VALARM",
+    "END:VEVENT",
+    "END:VCALENDAR"
+  ].join("\r\n");
 
-  const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(EVENT_DATA.title)}&dates=${startISO}/${endISO}&ctz=${EVENT_DATA.timeZone}&details=${encodeURIComponent(EVENT_DATA.description)}&location=${encodeURIComponent(EVENT_DATA.location)}`;
-  const outlookUrl = `https://outlook.live.com/calendar/0/action/compose?rru=addevent&subject=${encodeURIComponent(EVENT_DATA.title)}&startdt=${EVENT_DATA.start}&enddt=${EVENT_DATA.end}&body=${encodeURIComponent(EVENT_DATA.description)}&location=${encodeURIComponent(EVENT_DATA.location)}`;
+  const ua = navigator.userAgent || "";
+  const isIOS = /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isInApp = /FBAN|FBAV|Instagram|LinkedIn|Snapchat|TikTok|MicroMessenger|WhatsApp|Line\/|musical_ly/i.test(ua);
 
-  const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Event Calendar//FR
-BEGIN:VEVENT
-SUMMARY:${EVENT_DATA.title}
-DESCRIPTION:${EVENT_DATA.description.replace(/\n/g, '\\n')}
-LOCATION:${EVENT_DATA.location}
-DTSTART:${startISO}
-DTEND:${endISO}
-END:VEVENT
-END:VCALENDAR`;
+  if (isInApp) document.getElementById("calendarHint").hidden = false;
 
-  const icsBlobUrl = 'data:text/calendar;charset=utf8,' + encodeURIComponent(icsContent);
-
-  google.href = googleUrl;
-  document.getElementById("calOutlook").href = outlookUrl;
-  document.getElementById("calIcs").href = icsBlobUrl;
-  document.getElementById("calIcs").download = `${EVENT_DATA.title.toLowerCase().replace(/\s+/g, '-')}.ics`;
-  apple.href = icsBlobUrl;
-
-  const ua = navigator.userAgent || navigator.vendor || window.opera;
-  const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const isAndroid = /Android/i.test(ua);
-  const isInAppBrowser = /FBAN|FBAV|Instagram|LinkedIn|Snapchat|TikTok|MicroMessenger|WhatsApp|Line\/|musical_ly|LinkedInApp/i.test(ua);
-
-  if (isIOS) {
-    primaryText.textContent = "Apple Calendar (iPhone/Mac)";
-    primaryIcon.textContent = "🍎";
-    primaryOption.href = icsBlobUrl;
-    primaryOption.removeAttribute("target");
-    apple.classList.add("recommended");
-    document.getElementById("calIcs").style.display = "none";
-  } else if (isAndroid) {
-    primaryText.textContent = "Google Agenda (Android)";
-    primaryIcon.textContent = "📆";
-    primaryOption.href = googleUrl;
-    google.classList.add("recommended");
-    optionsMenu.insertBefore(google, optionsMenu.children[1] || null);
-  } else {
-    primaryText.textContent = "Google Agenda";
-    primaryIcon.textContent = "📆";
-    primaryOption.href = googleUrl;
-    google.classList.add("recommended");
-  }
-
-  if (isInAppBrowser) {
-    hintBox.style.display = "block";
-  }
-
-  function setMenuOpen(open) {
-    toggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
-    optionsMenu.hidden = !open;
-    optionsMenu.classList.toggle("open", open);
-  }
-
-  toggleBtn.addEventListener("click", function (e) {
-    e.stopPropagation();
-    setMenuOpen(toggleBtn.getAttribute("aria-expanded") !== "true");
-  });
-
-  document.addEventListener("click", function (e) {
-    if (!optionsMenu.contains(e.target) && e.target !== toggleBtn) {
-      setMenuOpen(false);
+  document.getElementById("calendarBtn").addEventListener("click", function () {
+    if (isIOS) {
+      // iOS : ouvre directement la fenêtre Apple Agenda
+      window.location.href =
+        "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
+      return;
     }
+    // Android / ordinateur : le .ics s'ouvre dans l'agenda par défaut
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "bat-mitsva-rina.ics";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
   });
-});
+})();
 </script>
+
 
       <div id="successMsg" class="success-message">
         ✨ Votre réponse a bien été enregistrée ! Merci beaucoup.
