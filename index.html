@@ -484,73 +484,9 @@
   </div>
 </div>
 
-<script>
-(function () {
-  const EVENT = {
-    title: "Bat Mitsva de Rina",
-    description: "14 heures précises. Public exclusivement féminin. Attention buffet halavi. Réponse souhaitée avant le 13/12/2026.",
-    location: "Salle La Vague, 5 bis rue de la Forêt, 95350 Saint-Brice-sous-Forêt",
-    // 14h–19h heure de Paris (UTC+1 en décembre) = 13h–18h UTC
-    startUTC: "20261223T130000Z",
-    endUTC: "20261223T180000Z"
-  };
-
-  const esc = (s) => s.replace(/\\/g, "\\\\").replace(/;/g, "\\;")
-                      .replace(/,/g, "\\,").replace(/\n/g, "\\n");
-  const stamp = new Date().toISOString().replace(/[-:]|\.\d{3}/g, "");
-
-  const ics = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//Bat Mitsva Rina//FR",
-    "CALSCALE:GREGORIAN",
-    "METHOD:PUBLISH",
-    "BEGIN:VEVENT",
-    "UID:bat-mitsva-rina-20261223@invitation",
-    "DTSTAMP:" + stamp,
-    "DTSTART:" + EVENT.startUTC,
-    "DTEND:" + EVENT.endUTC,
-    "SUMMARY:" + esc(EVENT.title),
-    "DESCRIPTION:" + esc(EVENT.description),
-    "LOCATION:" + esc(EVENT.location),
-    "BEGIN:VALARM",
-    "TRIGGER:-P1D",
-    "ACTION:DISPLAY",
-    "DESCRIPTION:Rappel : " + esc(EVENT.title),
-    "END:VALARM",
-    "END:VEVENT",
-    "END:VCALENDAR"
-  ].join("\r\n");
-
-  const ua = navigator.userAgent || "";
-  const isIOS = /iPad|iPhone|iPod/.test(ua) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  const isInApp = /FBAN|FBAV|Instagram|LinkedIn|Snapchat|TikTok|MicroMessenger|WhatsApp|Line\/|musical_ly/i.test(ua);
-
-  if (isInApp) document.getElementById("calendarHint").hidden = false;
-
-  document.getElementById("calendarBtn").addEventListener("click", function () {
-    if (isIOS) {
-      // iOS : ouvre directement la fenêtre Apple Agenda
-      window.location.href =
-        "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
-      return;
-    }
-    // Android / ordinateur : le .ics s'ouvre dans l'agenda par défaut
-    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "bat-mitsva-rina.ics";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1500);
-  });
-})();
-</script>
 
 
+ 
       <div id="successMsg" class="success-message">
         ✨ Votre réponse a bien été enregistrée ! Merci beaucoup.
       </div>
